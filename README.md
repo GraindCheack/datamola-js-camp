@@ -1,6 +1,6 @@
 # datamola-js-camp
 
-# Nikan Halinouski
+# Nikon Galinovsky
 
 ## Contacts
 
