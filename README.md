@@ -2,3 +2,6 @@
 
 ## Design layout
 https://GraindCheack.github.io/datamola-js-camp/design-layout/dl
+
+## Extra Tasks
+https://graindcheack.github.io/datamola-js-camp/Extra%20tasks/et
