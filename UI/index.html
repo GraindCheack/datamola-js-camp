@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <title>Document</title>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo header__logo">
+        <img src="./images/logo.svg" alt="Logo" class="logo__image">
+        <h1 class="logo__text">D<span>M</span>Chat</h1>
+      </div>
+      <nav class="nav header__nav">
+        <span class="nav__user-name">GraindCheack</span>
+        <a href="#" class="nav__link">Выйти</a>
+      </nav>
+    </header>
+    <main class="main">
+      <img src="./images/phone-mess.svg" alt="Phone with messages" class="main__image">
+      <section class="chat">
+        <div class="filter-form">
+          <input type="text" name="name" class="filter-form__input">
+          <input type="date" name="date" class="filter-form__input filter-form__date-input">
+          <input type="text" name="message" class="filter-form__input">
+          <button type="submit" class="filter-form__button"><img src="./images/plus.svg" alt="" class="filter-form__image"></button>
+        </div>
+        <div class="chat__content">
+          <div class="chat__load-button"><button>Загрузить ещё</button></div>
+          <article class="message chat__message message_style_autres">
+            <div class="message__content_autres">
+              <h4 class="message__name">Ivasko</h4>
+              <span class="message__text">Lorem Ipsum is simply dummy t</span>
+              <div class="message__date">10.10.2020 10.26</div>
+            </div>
+          </article>
+          <article class="message chat__message message_style_autres">
+            <div class="message__content_autres">
+              <h4 class="message__name">Ivasko</h4>
+              <div class="message__text">Lorem Ipsum is simply dummy </div>
+              <div class="message__date">10.10.2020 10.26</div>
+            </div>
+          </article>
+          <article class="message chat__message message_style_autres">
+            <div class="message__content_autres">
+              <h4 class="message__name">Ivasko</h4>
+              <div class="message__text">Lorem Ipsum is simply dummy t</div>
+              <div class="message__date">10.10.2020 10.26</div>
+            </div>
+          </article>
+          <article class="message chat__message message_style_autres">
+            <div class="message__content_autres">
+              <h4 class="message__name">Ivasko</h4>
+              <div class="message__text">Lorem Ipsum is simply dummy t</div>
+              <div class="message__date">10.10.2020 10.26</div>
+            </div>
+          </article>
+          <article class="message chat__message message_style_autres">
+            <div class="message__content_autres">
+              <h4 class="message__name">Ivasko</h4>
+              <div class="message__text">Lorem Ipsum is simply dummy t</div>
+              <div class="message__date">10.10.2020 10.26</div>
+            </div>
+          </article>
+          <article class="message chat__message message_style_autres-personal">
+            <div class="message__content_autres">
+              <h4 class="message__name">Ivasko</h4>
+              <div class="message__text">Lorem Ipsum is simply dummy t</div>
+              <div class="message__date">10.10.2020 10.26</div>
+            </div>
+          </article>
+          <article class="message chat__message message_style_autres-personal">
+            <div class="message__content_autres">
+              <h4 class="message__name">Ivasko</h4>
+              <div class="message__text">Lorem Ipsum is simply dummy t</div>
+              <div class="message__date">10.10.2020 10.26</div>
+            </div>
+          </article>
+          <article class="message chat__message message_style_autres-personal">
+            <div class="message__content_autres">
+              <h4 class="message__name">Ivasko</h4>
+              <div class="message__text">Lorem Ipsum is simply dummy t</div>
+              <div class="message__date">10.10.2020 10.26</div>
+            </div>
+          </article>
+          <article class="message chat__message message_style_user">
+            <div class="message__content_user">
+              <div class="message__head">
+                <h4 class="message__name">Ivasko</h4>
+                <div class="message-control">
+                  <img src="./images/delete.svg" alt="Delete" class="message-control__image">
+                  <img src="./images/edit.svg" alt="Edit" class="message-control__image">
+                </div>
+              </div>
+              <div class="message__text">Lorem Ipsum is simply dummy t</div>
+              <div class="message__date">10.10.2020 10.26</div>
+            </div>
+          </article>
+          <article class="message chat__message message_style_user-personal">
+            <div class="message__content_user">
+              <div class="message__head">
+                <h4 class="message__name">Ivasko</h4>
+                <div class="message-control">
+                  <img src="./images/delete.svg" alt="Delete" class="message-control__image">
+                  <img src="./images/edit.svg" alt="Edit" class="message-control__image">
+                </div>
+              </div>
+              <div class="message__text">Lorem Ipsum is simply dummy t</div>
+              <div class="message__date">10.10.2020 10.26</div>
+            </div>
+          </article>
+        </div>
+        <div class="mesage-form">
+          <input type="text" name="message" class="mesage-form__input">
+          <button type="submit" class="mesage-form__button"><img src="./images/send.svg" alt="Send"></button>
+        </div>
+      </section>
+      <aside class="chat-users">
+        <div class="active-user">
+          <div class="chat-users__head">Список пользователей:</div>
+          <ul class="active-user__list">
+            <li class="active-user__elem">GraindCheack</li>
+            <li class="active-user__elem">Ivasko</li>
+            <li class="active-user__elem">Gerasim</li>
+          </ul>
+        </div>
+        <div class="person-message">
+          <div class="chat-users__head">Личное сообщение для:</div>
+          <div class="active-user__elem">Gerasim</div>
+          <div class="mesage-form person-message__mesage-form">
+            <input type="text" name="message" class="mesage-form__input">
+            <button type="submit" class="mesage-form__button"><img src="./images/send-2.svg" alt="Send"></button>
+          </div>
+        </div>
+      </aside>
+    </main>
+    <footer class="footer">
+      <div class="footer__content">
+        <h2 class="footer__company">DMChat</h2>
+        <span class="footer__author">Никон Галиновский: </span>
+        <span class="footer__contacts">
+          nikon.galinovsky@yandex.com
+          <a href="https://github.com/GraindCheack" class="footer__link">
+            <img src="./images/gitgub.svg" alt="Github" class="footer__image">
+          </a>
+          <a href="https://github.com/GraindCheack" class="footer__link">
+            <img src="./images/vk.svg" alt="Github" class="footer__image">
+          </a>
+        </span>
+        <div class="footer__date">22.10.2020</div>
+      </div>
+    </footer>
+  </body>
+</html>
