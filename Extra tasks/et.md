@@ -8,4 +8,4 @@ Mobile design layout
 
 ## 3.1
 
-Extra tasks/images/extra-task-3.1.png
+![Temporary els](images/extra-task-3.1.png)
