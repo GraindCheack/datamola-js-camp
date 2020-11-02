@@ -3,6 +3,7 @@ import test from './test.js'
 
 (function (content) {
   const { messages } = content;
+  const currentAuthor = 'GraindCheack';
 
   const DMChat = {
     getMessages: getMessages,
@@ -14,7 +15,7 @@ import test from './test.js'
   }
 
   function getMessages(skip = 0, top = 10, filterConfig) {
-    const { author, dateFrom, dateTo, text } = filterConfig ? filterConfig : {};
+    const { author, dateFrom, dateTo, text } = filterConfig || {};
 
     let newMessages = messages.slice(skip, skip + top);
     newMessages = filterConfig ? newMessages.filter(item => {
@@ -31,41 +32,51 @@ import test from './test.js'
   }
 
   function getMessage(id) {
-    return messages[id];
+    return messages.find(item => item.id === `${id}`);
   }
 
   function validateMessage(msg) {
-    if (!msg) return false
+    if (!msg) return false;
     const { id, text, createdAt, author } = msg;
     const validTypes = typeof id === 'string' && typeof text === 'string' && typeof createdAt === 'object' && typeof author === 'string';
-    const validValue = id && text && createdAt && author;
-    return validValue && validTypes ? true : false;
+    const validValue = Boolean(id && text && createdAt && author);
+    return validValue && validTypes && text.length <= 200;
   }
 
   function addMessage(msg) {
-    if (!validateMessage(msg)) return false;
-    messages.push(msg);
+    const id = `${+Math.max(...messages.map(item => item.id)) + 1}`;
+    const newMessage = {
+      ...msg,
+      id: id,
+      author: currentAuthor,
+      createdAt: new Date(),
+    };
+    if (!newMessage?.text || typeof newMessage.text !== 'string') return false;
+    messages.push(newMessage);
     return true;
   }
 
   function editMessage(msgId, msg) {
-    if (!messages[msgId]) return false;
-    const { id, author, createdAt } = messages[msgId]
+    const placeId = messages.findIndex(item => item.id === `${msgId}`)
+    if (placeId < 0) return false;
+    const { id, author, createdAt } = messages[placeId]
     const newMessage = {
-      ...messages[msgId], 
-      ...msg, 
-      id: id, 
-      author: author, 
+      ...messages[placeId],
+      ...msg,
+      id: id,
+      author: author,
       createdAt: createdAt
     };
     if (!validateMessage(newMessage)) return false;
-    messages[msgId] = newMessage;
+    messages[placeId] = newMessage;
     return true;
   }
 
   function removeMessage(id) {
-    const delMsg = messages.splice(id, 1);
-    return delMsg.length > 0 ? true : false;
+    const placeId = messages.findIndex(item => item.id === `${id}`)
+    if (placeId < 0) return false
+    const delMsg = messages.splice(placeId, 1);
+    return delMsg.length > 0;
   }
 
   window.DMChat = { ...DMChat, runTest: () => test(DMChat) }

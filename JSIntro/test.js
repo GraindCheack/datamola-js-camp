@@ -10,6 +10,7 @@ export default function (DMChat) {
 
   console.log('getMessage');
   console.log('1\n', DMChat.getMessage(1));
+  console.log('"15"\n', DMChat.getMessage('15'));
   console.log('46\n', DMChat.getMessage(46));
   console.log('----------');
 
@@ -23,17 +24,18 @@ export default function (DMChat) {
   console.log('addMessage');
   console.log('{id: "1", author: "GraindCheack", createdAt: new Date(), text: "Hello"}\n', DMChat.addMessage({ id: '1', author: 'GraindCheack', createdAt: new Date(), text: 'Hello' }));
   console.log('{id: "1", author: "GraindCheack", createdAt: new Date()}\n', DMChat.addMessage({ id: '1', author: 'GraindCheack', createdAt: new Date() }));
+  console.log('{text: "Hello!!!"}\n', DMChat.addMessage({ text: 'Hello!!!' }));
   console.log('----------');
 
   console.log('editMessage');
+  console.log('"1", { text: "hi" }\n', DMChat.editMessage('1', { text: 'hi' }));
   console.log('"0", { text: "hi" }\n', DMChat.editMessage('0', { text: 'hi' }));
-  console.log('"30", { text: "hi" }\n', DMChat.editMessage('30', { text: 'hi' }));
-  console.log('"0", { text: "hi", gh: "sf" }\n', DMChat.editMessage('0', { text: 'hi', gh: 'sf' }));
-  console.log('"0", { text: "hi", author: "Ivaaasko" }\n', DMChat.editMessage('0', { text: 'hi', author: 'Ivaaasko' }));
+  console.log('"1", { text: "hi", gh: "sf" }\n', DMChat.editMessage('1', { text: 'hi', gh: 'sf' }));
+  console.log('"1", { text: "hi", author: "Ivaaasko" }\n', DMChat.editMessage('1', { text: 'hi', author: 'Ivaaasko' }));
   console.log('----------');
 
   console.log('removeMessage');
-  console.log('19\n', DMChat.removeMessage(20));
-  console.log('19\n', DMChat.removeMessage(20));
+  console.log('502\n', DMChat.removeMessage(502));
+  console.log('5\n', DMChat.removeMessage(5));
   console.log('----------');
 }
