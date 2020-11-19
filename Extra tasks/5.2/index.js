@@ -13,6 +13,52 @@ function createElement(tag = 'div', classes = '', inner = '') {
   return newElem;
 }
 
+/**
+ * Recursive function. Add new elements to parent element
+ *
+ * @param {Node} elem - parent element
+ * @param {object} node - node object, supports:
+ *    {string} value - text content
+ *    {Array.<object>} children - nodes array
+ */
+function createListElem(elem, node) {
+  const { children, value } = node;
+  const listItemElem = createElement('li', 'list__item', value);
+  if (children) {
+    const newListElem = createElement('ul', 'list');
+
+    children.forEach(item => {
+      createListElem(newListElem, item);
+    });
+
+    listItemElem.appendChild(newListElem);
+  }
+  elem.appendChild(listItemElem);
+}
+
+/**
+ * Create list in body
+ *
+ * @param {string} title - parent element
+ * @param {Array.<object>} node - node object, object supports:
+ *    {string} value - text content
+ *    {Array.<object>} children - nodes array
+ */
+function createList(title, list) {
+  const body = document.querySelector('body');
+  const listBlockElem = createElement('div', 'list-cont');
+  const titleElem = createElement('h2', 'list__title', title);
+  const listElem = createElement('ul', 'list');
+
+  list.forEach(item => {
+    createListElem(listElem, item)
+  })
+
+  listBlockElem.appendChild(titleElem);
+  listBlockElem.appendChild(listElem);
+  body.appendChild(listBlockElem);
+}
+
 const data = [
   {
     value: 'Пункт 1.',
@@ -49,36 +95,6 @@ const data = [
     children: null,
   }
 ];
-
-function createListElem(elem, node, level = 0) {
-  const { children, value } = node;
-  const listItemElem = createElement('li', 'list__item', value);
-  if (children) {
-    const newListElem = createElement('ul', 'list');
-
-    children.forEach(item => {
-      createListElem(newListElem, item, level + 1);
-    });
-
-    listItemElem.appendChild(newListElem);
-  }
-  elem.appendChild(listItemElem);
-}
-
-function createList(title, list) {
-  const body = document.querySelector('body');
-  const listBlockElem = createElement('div', 'list-cont');
-  const titleElem = createElement('h2', 'list__title');
-  const listElem = createElement('ul', 'list');
-
-  list.forEach(item => {
-    createListElem(listElem, item, 0)
-  })
-
-  listBlockElem.appendChild(titleElem);
-  listBlockElem.appendChild(listElem);
-  body.appendChild(listBlockElem);
-}
 
 createList('Первый лист', data);
 
