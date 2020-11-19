@@ -1,0 +1,33 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 16px;
+}
+
+.table {
+  border-collapse: collapse;
+}
+
+.table__theme_dark {
+  background: #343a40;
+  color: white;
+}
+
+.table-column {
+  height: 60px;
+  width: 60px;
+  text-align: center;
+}
+
+.table__row {
+  border-bottom: 0.5px solid rgb(97, 97, 97);
+}
+
+.head__row {
+  border-bottom: 2px solid rgb(122, 122, 122);
+}
