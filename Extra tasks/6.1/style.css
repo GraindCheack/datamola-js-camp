@@ -1,0 +1,12 @@
+html {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 20px;
+}
+
+.list__item {
+  font-size: 90%;
+}
+
+.list_hidden {
+  display: none;
+}
