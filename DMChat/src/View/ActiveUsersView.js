@@ -5,13 +5,15 @@ class ActiveUsersView {
   /**
    * Create a view.
    * @param {string} containerId - index.html element id
+   * @param {Function} clickCallback - callback on active user item click
    */
-  constructor(containerId) {
+  constructor(containerId, clickCallback) {
     this.elem = document.getElementById(containerId);
+    this.clickCallback = clickCallback;
 
     this.temp = `
       <li class="active-user__elem">{Username}</li>
-    `
+    `;
   }
 
   /**
@@ -20,13 +22,15 @@ class ActiveUsersView {
    * @param {Array.<String>} [users = []] - users list 
    */
   display(users = []) {
-    const { temp } = this
+    const { temp, elem, clickCallback } = this;
     let HTMLContent = '';
     users?.forEach(item => {
       HTMLContent += temp.replace('{Username}', item);
     })
-    this.elem.innerHTML = '';
-    this.elem.insertAdjacentHTML('beforeend', HTMLContent)
+    elem.innerHTML = '';
+    elem.insertAdjacentHTML('beforeend', HTMLContent);
+
+    elem.addEventListener('click', clickCallback);
   }
 }
 

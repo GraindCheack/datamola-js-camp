@@ -66,16 +66,22 @@ class MessageModel {
       }
     }
     this.msgs = newMsgs;
+    this.restore();
   }
 
-  get user() {
-    return this._user;
+  /** Save message list changes in local storage */
+  save() {
+    const { msgs } = this;
+    localStorage.setItem('msgs', JSON.stringify(msgs));
   }
 
-  set user(value) {
-    if (typeof value === 'string' && value) {
-      this._user = value;
-    }
+  /** Restore message list from local storage */
+  restore() {
+    const restoreMsgs = JSON.parse(localStorage.getItem('msgs'));
+    this.addAll(restoreMsgs.map(item => {
+      const { _id, _author, _createdAt, text, to } = item;
+      return new Message(_author, to, new Date(_createdAt), text, _id);
+    }));
   }
 
   /**
@@ -104,7 +110,7 @@ class MessageModel {
    *    {string} text - message text
    * @return {Array.<Message>} of Message objects
    */
-  getPage(skip = 0, top = 10, filterConfig) {
+  getPage(skip = 0, top = 10, filterConfig, user) {
     const { author, dateFrom, dateTo, text } = filterConfig || {};
     const msgs = this.msgs;
 
@@ -113,14 +119,14 @@ class MessageModel {
       const isDateFrom = !dateFrom ? true : item.createdAt >= new Date(dateFrom) ? true : false;
       const isDateTo = !dateTo ? true : item.createdAt <= new Date(dateTo) ? true : false;
       const isText = !text ? true : item.text.includes(text) ? true : false;
-      const allowPersonal = (item.isPersonal && (item.to === this.user || item.author === this.user) || !item.isPersonal)
+      const allowPersonal = (item.isPersonal && (item.to === user || item.author === user) || !item.isPersonal)
       return isAuthor && isDateFrom && isDateTo && isText && allowPersonal;
     }) : this.msgs;
     newMsgs = newMsgs.sort((a, b) => {
       return +a.createdAt - +b.createdAt;
     });
 
-    return newMsgs.slice(skip, skip + top);
+    return newMsgs.slice(-(skip + top), -skip || undefined);
   }
 
   /**
@@ -137,18 +143,19 @@ class MessageModel {
    * Add Message in a list
    *
    * @param {object} msg - object with fields for Message constructor, supports:
-   *    {string} teFFxt - message text
+   *    {string} text - message text
+   *    {stirng} author - message author name
    *    {stirng} [id] - message unique id
-   *    {stirng} [author] - message author name
    *    {Date} [createdAt] - message creation date
    *    {stirng} [to] - message recipient name
    * @return {Boolean} is added
    */
   add(msg = {}) {
     const { to, text, id, createdAt, author } = msg;
-    const newMsg = new Message(author || this.user, to, createdAt, text, id);
+    const newMsg = new Message(author, to, createdAt, text, id);
     if (MessageModel.validate(newMsg)) {
       this.msgs.push(newMsg);
+      this.save();
       return true;
     } else {
       return false;
@@ -162,11 +169,11 @@ class MessageModel {
    *    {string} text - message text
    * @return {Boolean} is edited
    */
-  edit(inputId, msg) {
+  edit(inputId, msg, user) {
     const placeId = this.msgs.findIndex(item => item.id === inputId)
     if (placeId < 0) return false;
     const listMsg = this.msgs[placeId];
-    if (listMsg.author !== this.user) {
+    if (listMsg.author !== user) {
       return false;
     }
     const { id, author, createdAt, to } = listMsg;
@@ -174,6 +181,7 @@ class MessageModel {
     const newMsg = new Message(author, to, createdAt, text, id);
     if (MessageModel.validate(newMsg)) {
       this.msgs[placeId] = newMsg;
+      this.save();
       return true;
     } else {
       return false;
@@ -186,13 +194,14 @@ class MessageModel {
    * @param {string} id - Message object unique id
    * @return {Boolean} is removed
    */
-  remove(id) {
+  remove(id, user) {
     const msgs = this.msgs;
     const placeId = msgs.findIndex(item => item.id === `${id}`);
     if (placeId < 0) return false
     const msg = msgs[placeId];
-    if (msg.author === this.user) {
+    if (msg.author === user) {
       const delMsg = msgs.splice(placeId, 1);
+      this.save();
       return delMsg.length > 0;
     } else {
       return false;
@@ -210,6 +219,7 @@ class MessageModel {
     for (const msg of msgs) {
       if (MessageModel.validate(msg)) {
         this.msgs.push(msg);
+        this.save();
       } else {
         notValidMsgs.push(msg);
       }
@@ -220,6 +230,7 @@ class MessageModel {
   /** Clear all Message objects. */
   clear() {
     this.msgs = [];
+    this.save();
   }
 }
 

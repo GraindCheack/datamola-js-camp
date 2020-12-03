@@ -27,6 +27,7 @@
 html {
   font-family: 'Montserrat', sans-serif;
   font-size: 12px;
+  font-weight: normal;
   color: var(--dark-text);
 }
 
@@ -90,10 +91,89 @@ body {
   flex-grow: 1;
 }
 
-.main__image {
+.main_h_center {
+  align-items: center;
+}
+
+.main__image_chat {
   position: relative;
   z-index: -1;
   left: 30px;
+}
+
+.sign-form {
+  width: 25rem;
+  height: 31.7rem;
+  background: #f8f8f8;
+  padding: 28px;
+  margin-left: 3rem;
+  border-radius: 10px;
+}
+
+.sign-form__content {
+  position: relative;
+  margin-top: 28px;
+}
+
+.sign-form__input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 12px 10px 12px 26px;
+  font-family: inherit;
+  margin-bottom: 15px;
+}
+
+.sign-form__btn {
+  position: relative;
+  display: block;
+  width: 13rem;
+  height: 3.3rem;
+  background: var(--main-orange-color);
+  color: white;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  margin: 28px auto 0 auto;
+  padding: 12px 0;
+  outline: none;
+  border: none;
+  text-align: center;
+  transition: 1s ease;
+}
+
+.sign-form__btn:hover {
+  background: #f8741b;
+}
+
+.sign-form__btn-img {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-43%);
+}
+
+.sign-form__reset-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  position: absolute;
+  display: block;
+  outline: none;
+  border: none;
+  bottom: 0;
+  left: 0;
+  transition: 0.5s ease;
+  background: rgba(0, 0, 0, 0);
+}
+
+.sign-form__reset-btn:hover {
+  background: rgba(236, 236, 236, 1);
+}
+
+.message__name_admin {
+  color: #416e86;
 }
 
 .chat {
@@ -103,39 +183,92 @@ body {
 }
 
 .filter-form {
+  position: relative;
+  width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
   background: #f3f3f3;
   border-radius: 5px 5px 0 0;
-  overflow: hidden;
   height: 35px;
 }
 
-.filter-form__input {
-  width: 80px;
-  height: 80%;
-  background: #f3f3f3;
-  padding: 0 10px;
-  outline: none;
-  border: none;
-  border-right: 1px solid #d0d0d0;
+.filter-form__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  flex-grow: 1;
 }
 
-.filter-form__date-input {
-  width: auto;
-  font-size: 0.9rem;
-  flex-grow: 1;
+.filter-form__input_checkbox {
+  display: none;
+}
+
+.filter-form__item_date {
+  width: 40px;
+  flex-grow: 0;
+  border-right: 0.5px solid rgba(0, 0, 0, 0.2);
+  border-left: 0.5px solid rgba(0, 0, 0, 0.2);
+}
+
+.filter-form__item_date:hover {
+  cursor: pointer;
+  background: #e7e7e7;
+}
+
+.filter-form__input-text {
+  width: 40%;
+  padding: 0 10px;
+  border: none;
+  outline: none;
+  background: rgba(0, 0, 0, 0);
+}
+
+.filter-form__input-cont {
+  display: none;
+  z-index: 10;
+  top: 110%;
+  width: 50%;
+  padding-bottom: 10px;
+  border-radius: 10px;
+  text-align: center;
+  position: absolute;
+  background: rgb(245, 245, 245);
+}
+
+.filter-form__input-cont > p {
+  padding: 10px 0;
+  margin-top: 0;
+  background: #e7e7e7;
+}
+
+.filter-form__input_checkbox:checked + .filter-form__input-cont {
+  display: block;
+}
+
+.filter-form__input-date {
+  display: block;
+  margin: 0 auto;
+  background: rgba(0, 0, 0, 0);
+  border: none;
+  outline: none;
 }
 
 .filter-form__button {
   height: 100%;
   width: 35px;
+  background: rgba(0, 0, 0, 0);
   outline: none;
   border: none;
 }
 
-.filter-form__image:hover {
-  transform: scale(1.2);
+.filter-form__button:hover {
+  background: #e7e7e7;
+}
+
+.filter-form__image {
+  width: 20px;
 }
 
 .filter-selected {
@@ -170,6 +303,7 @@ body {
   height: 100%;
   flex-direction: column;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .chat__load-button > button {
@@ -184,6 +318,7 @@ body {
 }
 
 .chat__load-button > button:hover {
+  cursor: pointer;
   background: var(--main-orange-color);
   color: white;
 }
@@ -211,7 +346,7 @@ body {
 }
 
 .message__content {
-  padding: 8px 12px 12px 13px;
+  padding: 8px 12px 5px 13px;
 }
 
 .message__head {
@@ -231,6 +366,10 @@ body {
   margin-left: auto;
 }
 
+.message-control__image {
+  height: 12px;
+}
+
 .message-control__image:hover {
   cursor: pointer;
   transform: scale(1.1);
@@ -238,6 +377,16 @@ body {
 
 .message__date {
   width: 50%;
+  margin-left: auto;
+  margin-top: 2px;
+}
+
+.message__date_autres {
+  color: #6a6a6a;
+}
+
+.message__date_user {
+  color: #2f3134;
 }
 
 .message__background_user {
@@ -285,31 +434,59 @@ body {
 }
 
 .active-user__elem:hover {
+  cursor: pointer;
   background: #d0d0d0;
 }
 
-.mesage-form {
+.message-form {
   margin-top: 10px;
   display: flex;
   align-items: center;
   height: 28px;
 }
 
-.person-message__mesage-form {
-  margin-top: 50px;
-}
-
-.mesage-form__input {
+.message-form__container {
+  display: flex;
+  align-items: center;
   height: 100%;
-  border: none;
-  outline: none;
+  padding: 3px 20px;
   background: #efefef;
   border-radius: 10px;
-  padding: 0 20px;
   flex-grow: 1;
 }
 
-.mesage-form__button {
+.person-message__message-form {
+  margin-top: 50px;
+}
+
+.message-form__person-text {
+  opacity: 0.6;
+}
+
+.message-form__img {
+  height: 50%;
+  padding: 5px;
+  border-radius: 20%;
+  margin-right: 5px;
+}
+
+.message-form__img:hover {
+  cursor: pointer;
+  background: #dadada;
+}
+
+.message-form__input {
+  height: 100%;
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: inherit;
+  font-family: inherit;
+  flex-grow: 1;
+  background: rgba(0, 0, 0, 0);
+}
+
+.message-form__button {
   outline: none;
   border: none;
   background: none;
@@ -317,12 +494,12 @@ body {
   margin-left: 16px;
 }
 
-.mesage-form__button > img {
+.message-form__button > img {
   padding-top: 2px;
   width: 28px;
 }
 
-.mesage-form__button:hover {
+.message-form__button:hover {
   transform: scale(1.2);
 }
 
