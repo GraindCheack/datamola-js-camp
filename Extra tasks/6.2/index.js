@@ -1,6 +1,11 @@
 const gameElem = document.getElementById('game');
 
+/** Class representing game */
 class Game {
+  /**
+   * Create a view.
+   * @param {Node} game - game element
+   */
   constructor(game) {
     this.gameElem = game;
     this.gameTmp = `
@@ -28,7 +33,7 @@ class Game {
     `;
 
     this.formTmp = `
-      <form action="" class="game-form">
+      <form name="game" class="game-form">
         <label for="game__input" class="game__label" id="game__time">00:00</label>
         <button type="submit" class="game__button" id="game__button">Start / Restart</button>
         <div class="game-symbol">
@@ -45,6 +50,13 @@ class Game {
     this.isCompGame = false;
   }
 
+  /**
+   * Check line on winner
+   * 
+   * @param {number} a,
+   * @param {number} b - values for equation (a*i + k) for check line
+   * @return {boolean} - is winner
+   */
   isWinLine(a, k) {
     const { gameMap } = this;
     if (
@@ -57,6 +69,13 @@ class Game {
     return false;
   }
 
+  /**
+   * Check line on possibility to win
+   * 
+   * @param {number} a,
+   * @param {number} b - values for equation (a*i + k) for check line
+   * @return {boolean} - possibility to win in this line
+   */
   isMayWinLine(a, k) {
     const { gameMap, nowMove } = this;
     if (
@@ -68,6 +87,13 @@ class Game {
     return false;
   }
 
+  /**
+   * Do move: add figure into item and check winner 
+   * 
+   * @return {object/null} - winner params, may contains:
+   *    {string} win - winner name
+   *    {number} a, {number} k - values for filling win items
+   */
   getWinner() {
     const { gameMap } = this;
     let isDraw = true;
@@ -103,6 +129,7 @@ class Game {
       return null;
   }
 
+  /** Change current figure move */
   changeMove() {
     const zeroRElem = this.gameElem.querySelector('#form-zero');
     const crossRElem = this.gameElem.querySelector('#form-cross');
@@ -114,6 +141,7 @@ class Game {
     }
   }
 
+  /** Selecting field item by computer */
   computerMove() {
     const { gameMap, nowMove } = this;
     const emptyPosArr = [];
@@ -127,6 +155,13 @@ class Game {
     this.doMove(itemElem, pathElem, nowMove);
   }
 
+  /**
+   * Do move: add figure into item and check winner 
+   * 
+   * @param {Node} elem - selected element
+   * @param {string} path - path to figure image
+   * @param {string} name - name figure
+   */
   doMove(elem, path, name) {
     this.changeMove();
     const newHTML = this.figureHTML
@@ -141,6 +176,7 @@ class Game {
     }
   }
 
+  /** Update timer element on page */
   updateTimer() {
     const diff = new Date(new Date() - this.timer.start);
     const second = diff.getSeconds();
@@ -149,22 +185,27 @@ class Game {
       alert('Are you sleeping???');
       this.startTimer();
     }
-    const timeElem = this.gameElem.querySelector('#game__time');
-    timeElem.innerHTML = `${minute / 10 < 1 ? `0${minute}` : minute}:${second / 10 < 1 ? `0${second}` : second}`;
+    const { elem } = this.timer;
+    elem.innerHTML = `${minute / 10 < 1 ? `0${minute}` : minute}:${second / 10 < 1 ? `0${second}` : second}`;
   }
 
+  /** Start move timer */
   startTimer() {
-    if (this.timer) {
-      this.timer.clearTimer();
+    const { timer } = this;
+    if (timer) {
+      timer.clearTimer();
+      timer.elem.innerHTML = '00:00';
     }
     this.isCompGame = true;
     this.timer = {
       id: setInterval(() => { this.updateTimer() }, 1000),
       start: new Date(),
+      elem: this.gameElem.querySelector('#game__time'),
       clearTimer: () => clearInterval(this.timer.id)
     }
   }
 
+  /** Reset game field */
   reset() {
     const gameFieldElem = this.gameElem.querySelector('#game-field-tmp');
     const zeroRElem = this.gameElem.querySelector('#form-zero');
@@ -180,6 +221,7 @@ class Game {
     this.gameMap = ['', '', '', '', '', '', '', '', ''];
   }
 
+  /** Select field item for move on click */
   handleGameItemClick(event) {
     const { nowMove, gameMap } = this;
     const elem = event?.target;
@@ -193,16 +235,24 @@ class Game {
     }
     if (this.isCompGame) {
       this.computerMove();
+      this.startTimer()
     }
   }
 
-  handleStartBtnClick(event) {
+  /** Start game with computer on submit */
+  handleGameFormSubmit(event) {
     event.preventDefault();
     this.reset();
     this.startTimer();
     this.computerMove();
   }
 
+  /**
+   * Display messages in index.html
+   * 
+   * @param {number} a, 
+   * @param {number} k - values for equation (a*i + k) for filling items
+   */
   fillWinLine(a, k) {
     const items = [];
     items.push(gameElem.querySelector(`#game-item-${k + 1}`))
@@ -213,6 +263,13 @@ class Game {
     })
   }
 
+  /**
+   * Display messages in index.html
+   * 
+   * @param {object} - supports:
+   *    {string} win - winner name
+   *    {number} a, {number} k - values for filling win items
+   */
   displayWinner({ win, a, k }) {
     const { winTmp } = this;
     const newWinTmp = winTmp.replace('{Name}', win);
@@ -233,13 +290,14 @@ class Game {
     }
   }
 
+  /** Display game interface */
   display() {
     const { gameElem, gameTmp, formTmp } = this;
     gameElem.innerHTML = '';
     gameElem.insertAdjacentHTML('beforeend', formTmp + gameTmp);
-    const btnStartElem = this.gameElem.querySelector('#game__button');
+    const formElem = document.forms.game;
     const gameFieldElem = this.gameElem.querySelector('#game-field-tmp');
-    btnStartElem.addEventListener('click', (event) => this.handleStartBtnClick(event));
+    formElem.addEventListener('submit', (event) => this.handleGameFormSubmit(event));
     gameFieldElem.addEventListener('click', (event) => this.handleGameItemClick(event));
   }
 }
