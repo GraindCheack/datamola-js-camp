@@ -5,6 +5,7 @@ class PersonalUsersView {
   /**
    * Create a view.
    * @param {string} containerId - index.html element id
+   * @param {function} clickCallback - callback on personal user item click event
    */
   constructor(containerId, clickCallback) {
     this.elem = document.getElementById(containerId);

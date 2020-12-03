@@ -69,11 +69,13 @@ class MessageModel {
     this.restore();
   }
 
+  /** Save message list changes in local storage */
   save() {
     const { msgs } = this;
     localStorage.setItem('msgs', JSON.stringify(msgs));
   }
 
+  /** Restore message list from local storage */
   restore() {
     const restoreMsgs = JSON.parse(localStorage.getItem('msgs'));
     this.addAll(restoreMsgs.map(item => {

@@ -26,7 +26,7 @@ class ChatController {
         (event) => this.handleSignInSubmit(event),
         (event) => this.handleSignUpSubmit(event),
         (event) => this.handleFilterSubmit(event),
-        (event) => this.handleFilterReset(event),
+        (event) => this.handleFilterResetClick(event),
       ),
     };
 
@@ -53,6 +53,7 @@ class ChatController {
     }
   }
 
+  /** Redirect to chat page */
   runChat() {
     const { main, header } = this.views;
     main.display('chat');
@@ -63,7 +64,7 @@ class ChatController {
         'message-list',
         (event) => this.handleSendMsgSubmit(event),
         (event) => this.handleMsgControlClick(event),
-        (event) => this.handleResetFormElemClick(event)
+        (event) => this.handleResetMsgFormElemClick(event)
       ),
       activeUsers: new ActiveUsersView(
         'active-user__list',
@@ -82,6 +83,7 @@ class ChatController {
     this.showPersonalUsers();
   }
 
+  /** Redirect to sign in page */
   runSignIn() {
     const { main, header } = this.views;
     const { user } = this;
@@ -90,6 +92,7 @@ class ChatController {
     main.display('sign-in');
   }
 
+  /** Redirect to sign up page */
   runSignUp() {
     const { main, header } = this.views;
     const { user } = this;
@@ -98,12 +101,14 @@ class ChatController {
     main.display('sign-up');
   }
 
+  /** Sign out and redirect to chat page */
   runSignOut() {
     this._user = undefined;
     this.setCurrentUser();
     this.runChat();
   }
 
+  /** Sign up on submit */
   handleSignInSubmit(event) {
     event.preventDefault();
 
@@ -114,6 +119,7 @@ class ChatController {
     this.runChat();
   }
 
+  /** Sign up on submit */
   handleSignUpSubmit(event) {
     event.preventDefault();
 
@@ -125,12 +131,7 @@ class ChatController {
     this.runSignIn();
   }
 
-  handleNavClick(event) {
-    event.preventDefault();
-    const action = event.target.dataset['action'];
-    this[action]();
-  }
-
+  /** Add message on submit */
   handleSendMsgSubmit(event) {
     event.preventDefault();
     const { users } = this.models;
@@ -150,6 +151,7 @@ class ChatController {
     form.reset();
   }
 
+  /** Edit message on submit */
   handleEditMsgSubmit(id, event) {
     event.preventDefault();
     const { chat } = this.views;
@@ -158,9 +160,38 @@ class ChatController {
       text: form['message__text'].value,
     };
     this.editMessage(id, msg);
-    chat.setFormElem((event) => this.handleSendMsgSubmit(event), 'addUserMsg');
+    chat.setFormElem((event) => this.handleSendMsgSubmit(event));
   }
 
+  /** Add filters on submit */
+  handleFilterSubmit(event) {
+    event.preventDefault();
+    const { filter, skip, top } = this.state;
+    const elem = event.target;
+    const { text, author, dateFrom, timeFrom, dateTo, timeTo } = elem;
+
+    const dateFromFullText = dateFrom.value ?
+      `${dateFrom.value || ''} ${timeFrom.value || ''}` : timeFrom.value ?
+        `${new Date().toLocaleDateString('en').split(',')[0]} ${timeFrom.value || ''}` : null;
+    const dateToFullText = dateTo.value ?
+      `${dateTo.value || ''} ${timeTo.value || ''}` : timeTo.value ?
+        `${new Date().toLocaleDateString('en').split(',')[0]} ${timeTo.value || ''}` : null;
+    filter.text = text.value || null;
+    filter.author = author.value || null;
+    filter.dateFrom = dateFromFullText ? new Date(dateFromFullText) : null;
+    filter.dateTo = dateToFullText ? new Date(dateToFullText) : null;
+    this.views.filter.display(filter);
+    this.showMessages(skip, top, filter);
+  }
+
+  /** Redirect to selected page on click */
+  handleNavClick(event) {
+    event.preventDefault();
+    const action = event.target.dataset['action'];
+    this[action]();
+  }
+
+  /** Do action (remove/edit/show more messages) on click */
   handleMsgControlClick(event) {
     event.preventDefault();
     const { state } = this;
@@ -184,6 +215,7 @@ class ChatController {
     }
   }
 
+  /** Add selected active user to personal list on click */
   handleActiveUserClick(event) {
     event.preventDefault();
     const { chat } = this.views;
@@ -195,6 +227,7 @@ class ChatController {
     }
   }
 
+  /** Delete selected active user from personal list on click */
   handlePersonalUserClick(event) {
     event.preventDefault();
     const { users } = this.models;
@@ -209,7 +242,8 @@ class ChatController {
     }
   }
 
-  handleResetFormElemClick(event) {
+  /** Reset message form on default state on button[type="reset"] click */
+  handleResetMsgFormElemClick(event) {
     const { users } = this.models;
     const { chat } = this.views;
     if (event.target.dataset['action'] === 'close') {
@@ -219,27 +253,8 @@ class ChatController {
     }
   }
 
-  handleFilterSubmit(event) {
-    event.preventDefault();
-    const { filter, skip, top } = this.state;
-    const elem = event.target;
-    const { text, author, dateFrom, timeFrom, dateTo, timeTo } = elem;
-
-    const dateFromFullText = dateFrom.value ?
-      `${dateFrom.value || ''} ${timeFrom.value || ''}` : timeFrom.value ?
-        `${new Date().toLocaleDateString('en').split(',')[0]} ${timeFrom.value || ''}` : null;
-    const dateToFullText = dateTo.value ?
-      `${dateTo.value || ''} ${timeTo.value || ''}` : timeTo.value ?
-        `${new Date().toLocaleDateString('en').split(',')[0]} ${timeTo.value || ''}` : null;
-    filter.text = text.value || null;
-    filter.author = author.value || null;
-    filter.dateFrom = dateFromFullText ? new Date(dateFromFullText) : null;
-    filter.dateTo = dateToFullText ? new Date(dateToFullText) : null;
-    this.views.filter.display(filter);
-    this.showMessages(skip, top, filter);
-  }
-
-  handleFilterReset() {
+  /** Reset filter form and current filters on click */
+  handleFilterResetClick() {
     const { filter, skip, top } = this.state;
     filter.text = null;
     filter.author = null;
@@ -266,6 +281,11 @@ class ChatController {
     users.personalUsers = [];
   }
 
+  /**
+   * Add selected user and show new personal list
+   *
+   * @param {string} newUser - message object
+   */
   addPersonalUser(newUser) {
     const { users } = this.models;
 
@@ -274,6 +294,11 @@ class ChatController {
     }
   }
 
+  /**
+   * Remove selected user and show new personal list
+   *
+   * @param {string} newUser - message object
+   */
   removePersonalUser(newUser) {
     const { users } = this.models;
 
@@ -368,6 +393,7 @@ class ChatController {
   }
 }
 
+/** Set default message and user value in local storage */
 function setChatStorage() {
   if (!localStorage.getItem('msgs') || !localStorage.getItem('users')) {
     localStorage.setItem('msgs', '[]')

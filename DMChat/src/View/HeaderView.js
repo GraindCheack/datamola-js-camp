@@ -5,6 +5,7 @@ class HeaderView {
   /**
    * Create a view.
    * @param {string} containerId - index.html element id
+   * @param {Function} containerId - index.html element id
    */
   constructor(containerId, signCallback) {
     this.elem = document.getElementById(containerId);

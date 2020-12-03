@@ -1,6 +1,15 @@
 'use strict';
 
+/** Class representing page view */
 class MainView {
+  /**
+   * Create a view.
+   * @param {string} containerId - index.html element id
+   * @param {Function} signInCallback - callback on sign in form submit
+   * @param {Function} signUpCallback - callback on sign up form submit
+   * @param {Function} filterSubmitCallback - callback on filter form submit
+   * @param {Function} filterResetCallback - callback on filter form reset
+   */
   constructor(containerId, signInCallback, signUpCallback, filterSubmitCallback, filterResetCallback) {
     this.elem = document.getElementById(containerId);
     this.callback = {
@@ -89,6 +98,11 @@ class MainView {
     }
   }
 
+  /**
+   * Display messages in index.html
+   * 
+   * @param {string} [page = 'chat'] - page name
+   */
   display(page = 'chat') {
     const { elem } = this;
     const { signInCallback, signUpCallback, filterSubmitCallback, filterResetCallback } = this.callback;

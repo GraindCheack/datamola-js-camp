@@ -5,6 +5,9 @@ class MessagesView {
   /**
    * Create a view.
    * @param {string} containerId - index.html element id
+   * @param {Function} sendingMsgCallback - callback on message form submit
+   * @param {Function} msgControlCallback - callback on message block click
+   * @param {Function} resetFormCallback - callback on form reset button click
    */
   constructor(containerId, sendingMsgCallback, msgControlCallback, resetFormCallback) {
     this.elem = document.getElementById(containerId);
@@ -136,6 +139,13 @@ class MessagesView {
       .replace('{Date}', createdAt.toLocaleDateString('ru', dateOption));
   }
 
+  /**
+   * Display message form
+   *
+   * @param {Function} callback - callback on form click
+   * @param {string} [formType = 'addUserMsg'] - type name of message form
+   * @param {string} [value = ''] - value in form input element
+   */
   setFormElem(callback, formType = 'addUserMsg', value = '') {
     const { elem, temp } = this;
     const { resetFormCallback } = this.callback;

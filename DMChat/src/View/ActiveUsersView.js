@@ -5,6 +5,7 @@ class ActiveUsersView {
   /**
    * Create a view.
    * @param {string} containerId - index.html element id
+   * @param {Function} clickCallback - callback on active user item click
    */
   constructor(containerId, clickCallback) {
     this.elem = document.getElementById(containerId);
