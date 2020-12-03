@@ -21,3 +21,19 @@ https://graindcheack.github.io/datamola-js-camp/Extra%20tasks/4.1/
 ## 4.2
 
 https://graindcheack.github.io/datamola-js-camp/Extra%20tasks/4.2/
+
+## 5.1
+
+https://graindcheack.github.io/datamola-js-camp/Extra%20tasks/5.1/
+
+## 5.2
+
+https://graindcheack.github.io/datamola-js-camp/Extra%20tasks/5.2/
+
+## 6.1
+
+https://graindcheack.github.io/datamola-js-camp/Extra%20tasks/6.1/
+
+## 6.2
+
+https://graindcheack.github.io/datamola-js-camp/Extra%20tasks/6.2/
