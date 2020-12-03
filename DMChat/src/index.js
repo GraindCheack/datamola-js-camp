@@ -343,10 +343,11 @@ class ChatController {
    * @param {object} filterConfig - filter config object
    */
   showMessages(skip, top, filterConfig) {
+    const { user } = this;
     const { messages } = this.models;
     const { chat } = this.views;
 
-    const msgs = messages.getPage(skip, top, filterConfig);
+    const msgs = messages.getPage(skip, top, filterConfig, user);
     chat.display(this.user, msgs, false, true);
   }
 

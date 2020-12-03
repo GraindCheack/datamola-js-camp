@@ -108,7 +108,7 @@ class MessageModel {
    *    {string} text - message text
    * @return {Array.<Message>} of Message objects
    */
-  getPage(skip = 0, top = 10, filterConfig) {
+  getPage(skip = 0, top = 10, filterConfig, user) {
     const { author, dateFrom, dateTo, text } = filterConfig || {};
     const msgs = this.msgs;
 
@@ -117,7 +117,7 @@ class MessageModel {
       const isDateFrom = !dateFrom ? true : item.createdAt >= new Date(dateFrom) ? true : false;
       const isDateTo = !dateTo ? true : item.createdAt <= new Date(dateTo) ? true : false;
       const isText = !text ? true : item.text.includes(text) ? true : false;
-      const allowPersonal = (item.isPersonal && (item.to === this.user || item.author === this.user) || !item.isPersonal)
+      const allowPersonal = (item.isPersonal && (item.to === user || item.author === user) || !item.isPersonal)
       return isAuthor && isDateFrom && isDateTo && isText && allowPersonal;
     }) : this.msgs;
     newMsgs = newMsgs.sort((a, b) => {
