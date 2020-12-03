@@ -50,10 +50,10 @@ function createList(title, list) {
   const body = document.body;
   const listBlockElem = createElement('div', 'list-cont');
   listBlockElem.addEventListener('click', (event) => {
-    const { target, path } = event;
+    const { target } = event;
     if (target && target.tagName === 'SPAN') {
-      const parentElem = path.find(item => item.classList.contains('list__item'));
-      const childList = [...parentElem.children].find(item => item.tagName === 'UL');
+      const parentElem = target.closest('.list__item');
+      const childList = parentElem.querySelector('ul');
       if (childList) {
         childList.classList.toggle('list_hidden');
       }
@@ -81,7 +81,9 @@ const data = [
     children: [
       {
         value: 'Подпункт 2.1.',
-        children: null,
+        children: [
+          { value: 'sa', children: null }
+        ],
       },
       {
         value: 'Подпункт 2.2.',
