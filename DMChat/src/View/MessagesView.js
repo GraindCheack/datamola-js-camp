@@ -6,9 +6,13 @@ class MessagesView {
    * Create a view.
    * @param {string} containerId - index.html element id
    */
-  constructor(containerId) {
+  constructor(containerId, sendingMsgCallback, msgControlCallback, resetFormCallback) {
     this.elem = document.getElementById(containerId);
-    this.msgs = [];
+    this.callback = {
+      sendingMsgCallback: sendingMsgCallback,
+      msgControlCallback: msgControlCallback,
+      resetFormCallback: resetFormCallback,
+    };
 
     this.temp = {
       autres: `
@@ -17,7 +21,7 @@ class MessagesView {
           <div class="message__content">
             <h4 class="message__name">{Username}</h4>
             <div class="message__text">{Text}</div>
-            <div class="message__date">{Date}</div>
+            <div class="message__date message__date_autres">{Date}</div>
           </div>
         </article>
 
@@ -29,23 +33,37 @@ class MessagesView {
             <div class="message__head">
               <h4 class="message__name">{Username}</h4>
               <div class="message-control">
-                <img src="./images/delete.svg" alt="Delete" class="message-control__image">
-                <img src="./images/edit.svg" alt="Edit" class="message-control__image">
+                <img src="./images/delete.svg" alt="Delete" data-action="remove" class="message-control__image">
+                <img src="./images/edit.svg" alt="Edit" data-action="edit" class="message-control__image">
               </div>
             </div>
             <div class="message__text">{Text}</div>
-            <div class="message__date">{Date}</div>
+            <div class="message__date message__date_user">{Date}</div>
           </div>
         </article>
       `,
-      msgForm: `
-        <form class="mesage-form">
-          <input type="text" name="message" class="mesage-form__input" placeholder="Введите сообщение">
-          <button type="submit" class="mesage-form__button"><img src="./images/send.svg" alt="Send"></button>
-        </form>
+      addUserMsgFormCont: `
+        <div class="message-form__container">
+          <input type="text" name="message__text" class="message-form__input" placeholder="Введите сообщение" autocomplete="off">
+        </div>
+        <button type="submit" class="message-form__button"><img src="./images/send.svg" alt="Send"></button>
+      `,
+      addPersonalMsgFormCont: `
+        <div class="message-form__container">
+          <img src="./images/close.svg" alt="Close" data-action="close" class="message-form__img">
+          <input type="text" name="message__text" class="message-form__input" placeholder="Введите личное сообщение">
+        </div>
+        <button type="submit" class="message-form__button"><img src="./images/send-2.svg" alt="Send"></button>
+      `,
+      editMsgFormCont: `
+        <div class="message-form__container">
+          <img src="./images/close.svg" alt="Close" data-action="close" class="message-form__img">
+          <input type="text" name="message__text" class="message-form__input" autocomplete="off" value="{Value}">
+        </div>
+        <button type="submit" class="message-form__button"><img src="./images/send.svg" alt="Send"></button>
       `,
       loadBtn: `
-        <div class="chat__load-button"><button>Загрузить ещё</button></div>
+        <div class="chat__load-button"><button data-action="showMore">Загрузить ещё</button></div>
       `
     }
   }
@@ -57,8 +75,10 @@ class MessagesView {
    * @param {string} activeUser - active user name
    */
   addMessage(msg, activeUser) {
-    this.msgs.push(msg);
-    this.display(activeUser);
+    const { elem } = this;
+    const msgHTML = this.getHTMlByMsg(msg, activeUser);
+    elem.insertAdjacentHTML('beforeend', msgHTML);
+    elem.scrollTop = elem.scrollHeight;
   }
 
   /**
@@ -69,21 +89,22 @@ class MessagesView {
    * @param {string} activeUser - active user name
    */
   editMessage(id, msg, activeUser) {
-    const placeId = this.msgs.findIndex(item => item.id === id);
-    this.msgs[placeId] = msg;
-    this.display(activeUser);
+    const { elem } = this;
+    const newMsgHTML = this.getHTMlByMsg(msg, activeUser);
+    const msgElem = elem.querySelector(`[id="${id}"]`);
+    msgElem.insertAdjacentHTML('afterend', newMsgHTML);
+    elem.removeChild(msgElem);
   }
 
   /**
    * Remove message object from messages list
    *
    * @param {string} id - message id
-   * @param {string} activeUser - active user name
    */
-  removeMessage(id, activeUser) {
-    const placeId = this.msgs.findIndex(item => item.id === id);
-    this.msgs.splice(placeId, 1);
-    this.display(activeUser);
+  removeMessage(id) {
+    const { elem } = this;
+    const msgElem = elem.querySelector(`[id="${id}"]`);
+    elem.removeChild(msgElem);
   }
 
   /**
@@ -115,36 +136,56 @@ class MessagesView {
       .replace('{Date}', createdAt.toLocaleDateString('ru', dateOption));
   }
 
+  setFormElem(callback, formType = 'addUserMsg', value = '') {
+    const { elem, temp } = this;
+    const { resetFormCallback } = this.callback;
+    const formContHTML = temp[`${formType}FormCont`]
+      .replace('{Value}', value);
+
+    const lastFormElem = document.forms['message-form'];
+    if (lastFormElem) {
+      const formParent = lastFormElem.closest('div');
+      formParent.removeChild(lastFormElem);
+    }
+
+    const formElem = document.createElement('form');
+    formElem.name = 'message-form';
+
+    formElem.classList.add('message-form');
+    formElem.insertAdjacentHTML('beforeend', formContHTML);
+    elem.insertAdjacentElement('afterend', formElem);
+
+    formElem.addEventListener('submit', callback);
+    if (formType === 'editMsg' || formType === 'addPersonalMsg') {
+      formElem.addEventListener('click', resetFormCallback);
+    }
+  }
+
   /**
    * Display messages in index.html
    * 
    * @param {string} activeUser - active user name
    * @param {Array.<Message>} [msgs = []] - additional/new message list
    * @param {boolean} [isEnd = false] - if the last messages
-   * @param {boolean} [isEnd = false] - if to replace last messages
    */
-  display(activeUser, msgs = [], isEnd = false, isReplace = false) {
-    let HTMLContent = `
-      <div class="message-list">
-    `;
-    const { temp } = this;
-    let newMsgs = [];
+  display(activeUser, msgs = [], isEnd = false) {
+    const { temp, elem } = this;
+    const { msgControlCallback, sendingMsgCallback } = this.callback;
+
+    let HTMLContent = ``;
     if (!isEnd) {
       HTMLContent += temp.loadBtn;
     }
-    if (isReplace) {
-      this.msgs = msgs;
-      newMsgs = msgs;
-    } else {
-      newMsgs = [...this.msgs, ...msgs];
-    }
-    newMsgs.forEach(item => HTMLContent += this.getHTMlByMsg(item, activeUser));
-    HTMLContent += '</div>';
+    msgs.forEach(item => HTMLContent += this.getHTMlByMsg(item, activeUser));
+
+    elem.innerHTML = '';
+    elem.insertAdjacentHTML('beforeend', HTMLContent);
+    elem.addEventListener('click', msgControlCallback);
+    elem.scrollTop = elem.scrollHeight;
+
     if (activeUser) {
-      HTMLContent += temp.msgForm;
+      this.setFormElem(sendingMsgCallback);
     }
-    this.elem.innerHTML = '';
-    this.elem.insertAdjacentHTML('beforeend', HTMLContent);
   }
 }
 

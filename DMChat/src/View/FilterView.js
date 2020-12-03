@@ -11,7 +11,6 @@ class FilterView {
 
     this.temp = `
       <div class="filter-selected-item">
-        <img src="./images/close.svg" alt="del" class="filter-selected-item__img">
         <span class="filter-selected-item__text">{Data}</span>
       </div>
     `
@@ -27,24 +26,27 @@ class FilterView {
    *    {string} text - message text
    */
   display(filterConfig) {
-    const { temp } = this;
-    const { username, dateFrom, dateTo, text } = filterConfig;
+    const { temp, elem } = this;
+    const { author, dateFrom, dateTo, text } = filterConfig;
+    elem.innerHTML = '';
+    if (!(author || dateFrom || dateTo || text)) {
+      return
+    }
     let HTMLContent = '<div class="filter-selected" id="filter-select">';
-    if (username) {
-      HTMLContent += temp.replace('{Data}', username);
+    if (author) {
+      HTMLContent += temp.replace('{Data}', author);
     }
     if (dateFrom || dateTo) {
       const dateOption = { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' };
       const formatDateFrom = dateFrom ? dateFrom.toLocaleDateString('ru', dateOption) : '';
-      const formatDateTo = dateTo ? dateFrom.toLocaleDateString('ru', dateOption) : '';
+      const formatDateTo = dateTo ? dateTo.toLocaleDateString('ru', dateOption) : '';
       HTMLContent += temp.replace('{Data}', `${dateFrom ? formatDateFrom : '...'} - ${dateTo ? formatDateTo : '...'}`);
     }
     if (text) {
       HTMLContent += temp.replace('{Data}', text);
     }
     HTMLContent += '</div>'
-    this.elem.innerHTML = '';
-    this.elem.insertAdjacentHTML('beforeend', HTMLContent);
+    elem.insertAdjacentHTML('beforeend', HTMLContent);
   }
 }
 
