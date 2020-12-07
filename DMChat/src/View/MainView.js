@@ -30,10 +30,8 @@ class MainView {
             <div class="filter-form__input-cont">
               <p>От "дата/время"</p>
               <input type="date" name="dateFrom" class="filter-form__input-date">
-              <input type="time" name="timeFrom" class="filter-form__input-date">
               <p>До "дата/время"</p>
               <input type="date" name="dateTo" class="filter-form__input-date">
-              <input type="time" name="timeTo" class="filter-form__input-date">
             </div>
             <input type="text" name="text" class="filter-form__input-text filter-form__item" placeholder="Текст" autocomplete="off">
             <button type="reset" class="filter-form__button"><img src="./images/clean.svg" alt="Clean" class="filter-form__image"></button>
@@ -59,17 +57,19 @@ class MainView {
       signInHTML: `
         <img src="./images/sign.svg" alt="Chat" class="main__image_sign">
         <form action="" class="sign-form" id="sign-form" name="sign">
-          <div id="{ID}" class="message chat__message message_style_autres">
+          <div class="message chat__message message_style_autres">
             <img src="./images/message-autres.svg" alt="message" class="message__background_autres">
             <div class="message__content">
               <h4 class="message__name message__name_admin">DMChat</h4>
               <div class="message__text">Добро пожаловать!<br>Введи логин и пароль:</div>
-              <div class="message__date message__date_autres">30.11.2020 12:45</div>
+              <div class="message__date message__date_autres">...</div>
             </div>
           </div>
           <div class="sign-form__content">
-            <input type="text" class="sign-form__input" name="username" id="sign-form__name" placeholder="Логин" required>
-            <input type="password" class="sign-form__input" name="password" id="sign-form__password" placeholder="Пароль" required>
+            <input type="text" class="sign-form__input" name="name" id="sign-form__name" placeholder="Логин" required>
+            <input type="password" class="sign-form__input" name="pass" id="sign-form__password" placeholder="Пароль" required>
+            <input type="checkbox" name="error-hide" class="sign-form__checkbox sign-form__input_hidden">
+            <label for="error-hide" class="sign-form__text sign-form__text_error" id="sign-form__error"></label>
             <button type="submit" class="sign-form__btn">Войти <img src="./images/arrow-right.svg" alt="Next" class="sign-form__btn-img"></button>
             <button type="reset" class="sign-form__reset-btn"><img src="./images/clean.svg" alt="Clean"></button>
           </div>
@@ -82,18 +82,38 @@ class MainView {
             <img src="./images/message-autres.svg" alt="message" class="message__background_autres">
             <div class="message__content">
               <h4 class="message__name message__name_admin">DMChat</h4>
-              <div class="message__text">Давай регистрировтаься!<br>Введи логин и двжады пароль:</div>
+              <div class="message__text">Давай регистрироваться!<br>Введи логин и дважды пароль:</div>
               <div class="message__date message__date_autres">30.11.2020 12:45</div>
             </div>
           </div>
           <div class="sign-form__content">
-            <input type="text" class="sign-form__input" name="username" id="sign-form__name" placeholder="Логин" required>
-            <input type="password" class="sign-form__input" name="password" id="sign-form__password" placeholder="Пароль" required>
-            <input type="password" class="sign-form__input" name="password" id="sign-form__password_double" placeholder="Подтвердите пароль" required>
+            <input type="text" class="sign-form__input" name="name" id="sign-form__name" placeholder="Логин" required>
+            <input type="password" class="sign-form__input" name="pass" id="sign-form__password" placeholder="Пароль" required>
+            <input type="password" class="sign-form__input" name="pass" id="sign-form__password_double" placeholder="Подтвердите пароль" required>
+            <input type="checkbox" name="succeful-hide" class="sign-form__checkbox sign-form__input_hidden">
+            <label for="succeful-hide" class="sign-form__text sign-form__text_succesful">Регистрация прошла успешно.<br> Перенаправление через 2 секунды</label>
+            <input type="checkbox" name="error-hide" class="sign-form__checkbox sign-form__input_hidden">
+            <label for="error-hide" class="sign-form__text sign-form__text_error" id="sign-form__error"></label>
             <button type="submit" class="sign-form__btn">Регистрация <img src="./images/arrow-right.svg" alt="Next" class="sign-form__btn-img"></button>
             <button type="reset" class="sign-form__reset-btn"><img src="./images/clean.svg" alt="Clean"></button>
           </div>
         </form>
+      `,
+      errorHTML: `
+        <img src="./images/phone-mess.svg" alt="Phone with messages" class="main__image_error">
+        <div class="error">
+          <h2 class="error-status">
+            <span>{status-1}</span><span>{status-2}</span><span>{status-3}</span>
+          </h2>
+          <div class="message chat__message message_style_autres">
+            <img src="./images/message-autres.svg" alt="message" class="message__background_autres">
+            <div class="message__content">
+              <h4 class="message__name message__name_admin">DMChat</h4>
+              <div class="message__text">Ошибка<br>{Error}</div>
+              <div class="message__date message__date_autres">...</div>
+            </div>
+          </div>
+        </div>
       `
     }
   }
@@ -102,11 +122,13 @@ class MainView {
    * Display messages in index.html
    * 
    * @param {string} [page = 'chat'] - page name
+   * @param {string} [data = {}] - page data
    */
-  display(page = 'chat') {
+  display(page = 'chat', data = {}) {
     const { elem } = this;
     const { signInCallback, signUpCallback, filterSubmitCallback, filterResetCallback } = this.callback;
-    const { chatHTML, signInHTML, signUpHTML } = this.temp;
+    const { chatHTML, signInHTML, signUpHTML, errorHTML } = this.temp;
+    const status = (data.status || '').toString() || '???';
     elem.innerHTML = '';
     switch (page) {
       case 'chat':
@@ -120,6 +142,15 @@ class MainView {
       case 'sign-up':
         elem.classList.add('main_h_center');
         elem.insertAdjacentHTML('beforeend', signUpHTML);
+        break;
+      case 'error':
+        elem.classList.add('main_h_center');
+        elem.insertAdjacentHTML('beforeend', errorHTML
+          .replace('{status-1}', status[0])
+          .replace('{status-2}', status[1])
+          .replace('{status-3}', status[2])
+          .replace('{Error}', data.error)
+        );
         break;
     }
 

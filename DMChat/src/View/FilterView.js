@@ -37,10 +37,7 @@ class FilterView {
       HTMLContent += temp.replace('{Data}', author);
     }
     if (dateFrom || dateTo) {
-      const dateOption = { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' };
-      const formatDateFrom = dateFrom ? dateFrom.toLocaleDateString('ru', dateOption) : '';
-      const formatDateTo = dateTo ? dateTo.toLocaleDateString('ru', dateOption) : '';
-      HTMLContent += temp.replace('{Data}', `${dateFrom ? formatDateFrom : '...'} - ${dateTo ? formatDateTo : '...'}`);
+      HTMLContent += temp.replace('{Data}', `${dateFrom || '...'} - ${dateTo || '...'}`);
     }
     if (text) {
       HTMLContent += temp.replace('{Data}', text);
