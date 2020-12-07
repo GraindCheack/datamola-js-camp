@@ -11,12 +11,14 @@ class HeaderView {
     this.elem = document.getElementById(containerId);
     this.signCallback = signCallback;
     this.temp = {
-      isAuth: `
+      userHTML: `
         <span class="nav__user-name">{UserName}</span>
         <a href="#" data-action="runSignOut" class="nav__link">Выйти</a>
       `,
-      notAuth: `
+      chatHTML: `
         <a href="#" data-action="runChat" class="nav__link {ClassMain}">Главная</a>
+      `,
+      signHTML: `
         <a href="#" data-action="runSignIn" class="nav__link {ClassAuth}">Авторизация</a>
         <a href="#" data-action="runSignUp" class="nav__link {ClassReg}">Регистрация</a>
       `
@@ -31,11 +33,14 @@ class HeaderView {
    */
   display(activeUser, activePage = 'chat') {
     const { temp, elem, signCallback } = this;
-    const HTMLContent = activeUser ? temp.isAuth.replace('{UserName}', activeUser) :
-      this.temp.notAuth
+    let HTMLContent = activeUser ? temp.userHTML.replace('{UserName}', activeUser) :
+      (temp.chatHTML + temp.signHTML)
         .replace('{ClassMain}', activePage === 'chat' ? 'nav__link_active' : '')
         .replace('{ClassAuth}', activePage === 'sign-in' ? 'nav__link_active' : '')
         .replace('{ClassReg}', activePage === 'sign-up' ? 'nav__link_active' : '');
+    if (activeUser && activePage === 'error') {
+      HTMLContent = temp.chatHTML + HTMLContent;
+    }
     elem.innerHTML = '';
     elem.insertAdjacentHTML('beforeend', HTMLContent);
     elem.addEventListener('click', signCallback);

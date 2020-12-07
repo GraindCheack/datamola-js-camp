@@ -11,6 +11,7 @@ class MessagesView {
    */
   constructor(containerId, sendingMsgCallback, msgControlCallback, resetFormCallback) {
     this.elem = document.getElementById(containerId);
+    this.isFirstLoad = true;
     this.callback = {
       sendingMsgCallback: sendingMsgCallback,
       msgControlCallback: msgControlCallback,
@@ -30,13 +31,13 @@ class MessagesView {
 
       `,
       user: `
-        <article id="{ID}" class="message chat__message message_style_user {ClassName}">
+        <article id="{ID}" class="message chat__message message_style_user {ClassName}" {Selector}>
           <img src="./images/message-{Image}.svg" alt="message" class="message__background_user {BckClassName}">
           <div class="message__content">
             <div class="message__head">
               <h4 class="message__name">{Username}</h4>
               <div class="message-control">
-                <img src="./images/delete.svg" alt="Delete" data-action="remove" class="message-control__image">
+                <img src="./images/delete.svg" alt="Delete" data-action="confirmRemove" class="message-control__image">
                 <img src="./images/edit.svg" alt="Edit" data-action="edit" class="message-control__image">
               </div>
             </div>
@@ -67,47 +68,36 @@ class MessagesView {
       `,
       loadBtn: `
         <div class="chat__load-button"><button data-action="showMore">Загрузить ещё</button></div>
+      `,
+      messageControlDefault: `
+        <img src="./images/delete.svg" alt="Delete" data-action="confirmRemove" class="message-control__image">
+        <img src="./images/edit.svg" alt="Edit" data-action="edit" class="message-control__image">
+      `,
+      messageControlConfirm: `
+        <img src="./images/check.svg" alt="Delete" data-action="remove" class="message-control__image">
+        <img src="./images/close.svg" alt="Edit" data-action="closeConfirm" class="message-control__image">
       `
     }
   }
 
   /**
-   * Add message object
+   * Reset message controls to default state
    *
-   * @param {Message} msg - Message class object
-   * @param {string} activeUser - active user name
+   * @param {Node} elem - control block element
    */
-  addMessage(msg, activeUser) {
-    const { elem } = this;
-    const msgHTML = this.getHTMlByMsg(msg, activeUser);
-    elem.insertAdjacentHTML('beforeend', msgHTML);
-    elem.scrollTop = elem.scrollHeight;
+  resetMessageControls(elem) {
+    const { messageControlDefault } = this.temp;
+    elem.innerHTML = messageControlDefault;
   }
 
   /**
-   * Edit message object
+   * Display confirm action controls
    *
-   * @param {string} id - message id
-   * @param {Message} msg - Message class object
-   * @param {string} activeUser - active user name
+   * @param {Node} elem - control block element
    */
-  editMessage(id, msg, activeUser) {
-    const { elem } = this;
-    const newMsgHTML = this.getHTMlByMsg(msg, activeUser);
-    const msgElem = elem.querySelector(`[id="${id}"]`);
-    msgElem.insertAdjacentHTML('afterend', newMsgHTML);
-    elem.removeChild(msgElem);
-  }
-
-  /**
-   * Remove message object from messages list
-   *
-   * @param {string} id - message id
-   */
-  removeMessage(id) {
-    const { elem } = this;
-    const msgElem = elem.querySelector(`[id="${id}"]`);
-    elem.removeChild(msgElem);
+  confirmRemoveControl(elem) {
+    const { messageControlConfirm } = this.temp;
+    elem.innerHTML = messageControlConfirm;
   }
 
   /**
@@ -136,7 +126,8 @@ class MessagesView {
       .replace('{BckClassName}', isPersonal && author !== activeUser ? 'message__background_personal' : '')
       .replace('{ClassName}', isPersonal ? 'message_style_personal ' : '')
       .replace('{Username}', isAuthor && isPersonal ? `${author} - ${to}` : author)
-      .replace('{Date}', createdAt.toLocaleDateString('ru', dateOption));
+      .replace('{Selector}', isPersonal ? `data-to="${to}"` : '')
+      .replace('{Date}', (new Date(createdAt)).toLocaleString(undefined, dateOption));
   }
 
   /**
@@ -179,7 +170,7 @@ class MessagesView {
    * @param {boolean} [isEnd = false] - if the last messages
    */
   display(activeUser, msgs = [], isEnd = false) {
-    const { temp, elem } = this;
+    const { temp, elem, isFirstLoad } = this;
     const { msgControlCallback, sendingMsgCallback } = this.callback;
 
     let HTMLContent = ``;
@@ -191,10 +182,12 @@ class MessagesView {
     elem.innerHTML = '';
     elem.insertAdjacentHTML('beforeend', HTMLContent);
     elem.addEventListener('click', msgControlCallback);
-    elem.scrollTop = elem.scrollHeight;
-
-    if (activeUser) {
-      this.setFormElem(sendingMsgCallback);
+    if (isFirstLoad) {
+      elem.scrollTop = elem.scrollHeight;
+      this.isFirstLoad = false;
+      if (activeUser) {
+        this.setFormElem(sendingMsgCallback);
+      }
     }
   }
 }
