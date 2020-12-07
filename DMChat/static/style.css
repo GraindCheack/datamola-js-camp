@@ -1,5 +1,5 @@
 :root {
-  --main-yell-color: #f9b932;
+  --main-yellow-color: #f9b932;
   --main-blue-color: #416e86;
   --main-orange-color: #fa8b40;
   --dark-text: #2e3031;
@@ -22,6 +22,12 @@
   :root {
     --content-width: 1140px;
   }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 html {
@@ -91,6 +97,28 @@ body {
   flex-grow: 1;
 }
 
+.error {
+  margin-left: 8%;
+}
+
+.error-status {
+  font-family: 'Roboto';
+  font-weight: normal;
+  font-size: 12rem;
+}
+
+.error-status > span:nth-child(1) {
+  color: var(--main-orange-color);
+}
+
+.error-status > span:nth-child(2) {
+  color: #2f3134;
+}
+
+.error-status > span:nth-child(3) {
+  color: var(--main-yellow-color);
+}
+
 .main_h_center {
   align-items: center;
 }
@@ -103,7 +131,7 @@ body {
 
 .sign-form {
   width: 25rem;
-  height: 31.7rem;
+  min-height: 31.7rem;
   background: #f8f8f8;
   padding: 28px;
   margin-left: 3rem;
@@ -124,6 +152,10 @@ body {
   padding: 12px 10px 12px 26px;
   font-family: inherit;
   margin-bottom: 15px;
+}
+
+.sign-form__input_hidden {
+  display: none;
 }
 
 .sign-form__btn {
@@ -170,6 +202,23 @@ body {
 
 .sign-form__reset-btn:hover {
   background: rgba(236, 236, 236, 1);
+}
+
+.sign-form__text {
+  display: none;
+  text-align: center;
+}
+
+.sign-form__checkbox:checked + .sign-form__text {
+  display: block;
+}
+
+.sign-form__text_succesful {
+  color: #2ba700;
+}
+
+.sign-form__text_error {
+  color: #a70000;
 }
 
 .message__name_admin {
@@ -413,7 +462,8 @@ body {
 }
 
 .chat-users__head {
-  box-sizing: border-box;
+  position: sticky;
+  top: 0;
   height: 35px;
   padding: 10px 10px;
   background: #f3f3f3;
@@ -426,8 +476,12 @@ body {
   padding-left: 0;
 }
 
+.active-user {
+  max-height: 40%;
+  overflow-y: auto;
+}
+
 .active-user__elem {
-  box-sizing: border-box;
   font-weight: bold;
   height: 35px;
   padding: 10px 10px;
@@ -455,6 +509,11 @@ body {
   flex-grow: 1;
 }
 
+.person-message {
+  max-height: 40%;
+  overflow-y: auto;
+}
+
 .person-message__message-form {
   margin-top: 50px;
 }
@@ -464,7 +523,7 @@ body {
 }
 
 .message-form__img {
-  height: 50%;
+  height: 20px;
   padding: 5px;
   border-radius: 20%;
   margin-right: 5px;
